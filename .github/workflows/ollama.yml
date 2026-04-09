@@ -8,7 +8,7 @@ jobs:
         id: model
         with:
           model: gemma4:e4b
-          prompt: Explain the basics of machine learning.
+          prompt: Can you add 2 and 2?
 
       - name: Print response
         run: echo "$response"
