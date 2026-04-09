@@ -4,6 +4,7 @@ jobs:
   ollama:
     strategy:
       matrix:
+        fail-fast: false
         ollama_model: 
           - gemma4:e2b
           - gemma4:e4b
