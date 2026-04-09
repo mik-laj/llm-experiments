@@ -1,20 +1,38 @@
 on: push
-env:
-  OLLAMA_MODEL: gemma4:e4b
 
 jobs:
   ollama:
+    strategy:
+      matrix:
+        ollama_model: 
+          - gemma4:e2b
+          - gemma4:e4b
+          - qwen3.5:0.8b
+          - qwen3.5:2b
+          - qwen3.5:4b
+          - qwen3.5:9b
+          - ministral-3:3b
+          - ministral-3:8b
+          - ministral-3:14b
+          - gpt-oss:20b
+          - llama3.2:1b
+          - llama3.2:3b
+          - gemma3:270m
+          - gemma3:1b
+          - gemma3:4b
+          - gemma3:12b
+
+    env: 
+      OLLAMA_MODEL: ${{ matrix.ollama_model }}
+    name: "Run model: ${{ matrix.ollama_model }}"
+
     runs-on: ubuntu-latest
     steps:
       - name: Setup Ollama
         uses: ai-action/setup-ollama@v2
     
-      - name: Cache model
-        uses: actions/cache@v5
-        with:
-          path: ~/.ollama
-          key: ollama-action-${{ runner.os }}
-
       - run: ollama pull "${OLLAMA_MODEL}"
       - run: ollama run "${OLLAMA_MODEL}" "Difference between cat and dog" --think=false
+      - run: ollama run "${OLLAMA_MODEL}" "Difference between cat and dog" --think=false
+      - run: ollama run "${OLLAMA_MODEL}" "Difference between cat and dog" --think=true
       - run: ollama run "${OLLAMA_MODEL}" "Difference between cat and dog" --think=true
