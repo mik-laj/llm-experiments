@@ -1,16 +1,20 @@
 on: push
+env:
+  OLLAMA_MODEL: gemma4:e4b
+
 jobs:
   ollama:
     runs-on: ubuntu-latest
     steps:
-      - name: Run model
-        uses: ai-action/ollama-action@v2
-        id: model
+      - name: Setup Ollama
+        uses: ai-action/setup-ollama@v2
+    
+      - name: Cache model
+        uses: actions/cache@v5
         with:
-          model: gemma4:e4b
-          prompt: Can you add 2 and 2?
+          path: ~/.ollama
+          key: ollama-action-${{ runner.os }}
 
-      - name: Print response
-        run: echo "$response"
-        env:
-          response: ${{ steps.model.outputs.response }}
+      - run: ollama pull "${OLLAMA_MODEL}"
+      - run: ollama run "${OLLAMA_MODEL}" "Difference between cat and dog" --think=false
+      - run: ollama run "${OLLAMA_MODEL}" "Difference between cat and dog" --think=true
